@@ -8,28 +8,27 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// File upload setup
+
 const storage = multer.memoryStorage();
 const upload = multer({
   storage: storage,
   limits: { fileSize: 50 * 1024 * 1024 }
 });
 
-// Connect to MongoDB
+
 let gfs;
 mongoose.connect('mongodb://localhost:27017/candidateportal', {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 .then(() => {
-  console.log('✅ MongoDB Connected Successfully!');
+  console.log(' MongoDB Connected Successfully!');
   const db = mongoose.connection.db;
   gfs = new GridFSBucket(db, { bucketName: 'videos' });
-  console.log('✅ GridFSBucket initialized');
+  console.log('GridFSBucket initialized');
 })
-.catch(err => console.log('❌ MongoDB Connection Error:', err));
+.catch(err => console.log('MongoDB Connection Error:', err));
 
-// Candidate Schema
 const candidateSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
@@ -42,15 +41,13 @@ const candidateSchema = new mongoose.Schema({
 
 const Candidate = mongoose.model('Candidate', candidateSchema);
 
-// SIMPLIFIED VIDEO UPLOAD - FIXED VERSION
 app.post('/api/candidates', upload.fields([
   { name: 'resume', maxCount: 1 }, 
   { name: 'video', maxCount: 1 }
 ]), async (req, res) => {
   try {
-    console.log('📥 Received submission...');
+    console.log('Received submission...');
     
-    // Validate files
     if (!req.files?.resume || !req.files?.video) {
       return res.status(400).json({ error: 'Resume and video are required' });
     }
@@ -58,7 +55,6 @@ app.post('/api/candidates', upload.fields([
     const resumeFile = req.files.resume[0];
     const videoFile = req.files.video[0];
 
-    // Validate resume
     if (resumeFile.mimetype !== 'application/pdf') {
       return res.status(400).json({ error: 'Resume must be PDF' });
     }
@@ -66,7 +62,7 @@ app.post('/api/candidates', upload.fields([
       return res.status(400).json({ error: 'Resume must be < 5MB' });
     }
 
-    // Upload video to GridFS - SIMPLIFIED
+    
     console.log('📹 Uploading video to GridFS...');
     const videoId = new mongoose.Types.ObjectId();
     const uploadStream = gfs.openUploadStreamWithId(
@@ -84,9 +80,8 @@ app.post('/api/candidates', upload.fields([
       uploadStream.on('error', reject);
     });
 
-    console.log('✅ Video uploaded with ID:', videoId);
+    console.log('Video uploaded with ID:', videoId);
 
-    // Save candidate
     const candidateData = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
@@ -100,7 +95,7 @@ app.post('/api/candidates', upload.fields([
     const candidate = new Candidate(candidateData);
     await candidate.save();
 
-    console.log('✅ Candidate saved:', candidateData.firstName);
+    console.log('Candidate saved:', candidateData.firstName);
     
     res.json({ 
       success: true, 
@@ -114,7 +109,6 @@ app.post('/api/candidates', upload.fields([
   }
 });
 
-// Get video by ID
 app.get('/api/video/:id', async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -137,7 +131,6 @@ app.get('/api/video/:id', async (req, res) => {
   }
 });
 
-// Check if video exists
 app.get('/api/check-video/:id', async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -156,7 +149,6 @@ app.get('/api/check-video/:id', async (req, res) => {
   }
 });
 
-// List all videos (for debugging)
 app.get('/api/videos', async (req, res) => {
   try {
     const files = await mongoose.connection.db.collection('videos.files').find({}).toArray();
@@ -167,6 +159,6 @@ app.get('/api/videos', async (req, res) => {
 });
 
 app.listen(5000, () => {
-  console.log('🚀 Server running on port 5000');
-  console.log('📹 Test video list: http://localhost:5000/api/videos');
+  console.log(' Server running on port 5000');
+  console.log('Test video list: http://localhost:5000/api/videos');
 });
