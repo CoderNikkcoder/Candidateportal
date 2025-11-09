@@ -1,4 +1,4 @@
-// src/pages/ReviewPage.js
+
 import React, { useState } from "react";
 import { Container, Card, Button, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -39,10 +39,10 @@ function ReviewPage({ formData, videoBlob }) {
         <h3 className="mb-3 text-center">Review Application</h3>
 
         {status === "success" && (
-          <Alert variant="success">✅ Submitted successfully!</Alert>
+          <Alert variant="success"> Submitted successfully!</Alert>
         )}
         {status === "error" && (
-          <Alert variant="danger">❌ Submission failed!</Alert>
+          <Alert variant="danger"> Submission failed!</Alert>
         )}
 
         <p><b>Name:</b> {formData.firstName} {formData.lastName}</p>
@@ -62,7 +62,7 @@ function ReviewPage({ formData, videoBlob }) {
             ← Back
           </Button>
           <Button variant="success" onClick={handleSubmit}>
-            ✅ Submit
+             Submit
           </Button>
         </div>
       </Card>
