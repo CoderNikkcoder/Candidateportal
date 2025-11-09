@@ -1,4 +1,4 @@
-// src/pages/CandidateForm.js
+
 import React, { useState } from "react";
 import { Container, Form, Button, Card, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -118,7 +118,7 @@ function CandidateForm({ formData, setFormData }) {
             </Form.Control.Feedback>
             {formData.resume && (
               <Form.Text className="text-success">
-                ✅ {formData.resume.name}
+                 {formData.resume.name}
               </Form.Text>
             )}
           </Form.Group>
