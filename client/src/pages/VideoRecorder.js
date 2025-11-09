@@ -1,4 +1,4 @@
-// src/pages/VideoRecorder.js
+
 import React, { useState, useRef } from "react";
 import { Container, Button, Card, ProgressBar } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
@@ -96,7 +96,7 @@ function VideoRecorder({ videoBlob, setVideoBlob }) {
             <Button onClick={startRecording}>🎥 Start</Button>
           ) : (
             <Button onClick={stopRecording} variant="danger">
-              ⏹ Stop
+               Stop
             </Button>
           )}
           {videoBlob && (
@@ -104,7 +104,7 @@ function VideoRecorder({ videoBlob, setVideoBlob }) {
               onClick={() => setVideoBlob(null)}
               variant="outline-secondary"
             >
-              🔄 Retake
+               Retake
             </Button>
           )}
         </div>
